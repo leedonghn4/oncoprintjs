@@ -1,8 +1,7 @@
-var _ = require('underscore');
-var data = require('./tp53-mdm2-mdm4-gbm.json');
-data[0]
-
-_.groupBy(data, function(d) { return d.gene; })
+// TODO wait for gulp.
+//var _ = require('underscore');
+//var d3 = require('d3');
+//var data = require('./tp53-mdm2-mdm4-gbm.json');
 
 var oncoprint = function() {
 
