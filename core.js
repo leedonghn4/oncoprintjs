@@ -4,21 +4,32 @@
 //var data = require('./tp53-mdm2-mdm4-gbm.json');
 
 var Oncoprint = function() {
-
   // defaults
-  var foo = 42;
+  var rows;
+  var renderMaker;
 
-  var closure = function() {
+  var me = function(container) {
+    // the container itself is going to be a container of containers
+    // leaving the decision of what type of <svg> element to use up
+    // to the user.
+    container
+      .selectAll('div')
+      .enter
   };
 
-  // this is ridiculous, look into sweet.js
-  closure.foo = function(value) {
-    if (!arguments.length) return foo;
-    foo = value;
-    return closure;
+  me.rows = function(value) {
+    if (!arguments.length) return rows;
+    rows = value;
+    return me;
   }
 
-  return closure;
+  me.renderMaker = function(value) {
+    if (!arguments.length) return renderMaker;
+    renderMaker = value;
+    return me;
+  }
+
+  return me;
 };
 
 
@@ -30,7 +41,7 @@ d3.json('tp53-mdm2-mdm4-gbm.json', function(data)  {
   // a renderer is a function which takes data and returns a function
   // that takes an enter selection and decides what to do with it.
   // If it does not know how to do, then it must return `undefined`.
-  oncoprint.withRows(rows).withRenderMaker(function(d) {
+  oncoprint.rows(rows).renderMaker(function(d) {
     if (d.datatype === 'genomic') {
       return function(enter_selectoin) { };
     }
@@ -42,5 +53,5 @@ d3.json('tp53-mdm2-mdm4-gbm.json', function(data)  {
     return undefined;
   });
 
-  d3.select('#main').call(chart);
+  d3.select('#main').call(oncoprint);
 });
