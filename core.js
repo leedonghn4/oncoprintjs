@@ -27,13 +27,20 @@ d3.json('tp53-mdm2-mdm4-gbm.json', function(data)  {
 
   rows = _.chain(data).groupBy(function(d) { return d.gene; }).values().value();
 
-  var renderers = _.map(rows, getDefaultRenderer);
+  // a renderer is a function which takes data and returns a function
+  // that takes an enter selection and decides what to do with it.
+  // If it does not know how to do, then it must return `undefined`.
+  oncoprint.withRows(rows).withRenderMaker(function(d) {
+    if (d.datatype === 'genomic') {
+      return function(enter_selectoin) { };
+    }
 
-  oncoprint.withRows(rows).withRenderers({
-    'genomic': function(d) { },
-    'clinical': function(d) { }
+    if (d.datatype === 'clinical') {
+      return function(d) { };
+    }
+
+    return undefined;
   });
 
   d3.select('#main').call(chart);
-
 });
