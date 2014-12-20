@@ -29,10 +29,10 @@ d3.json('tp53-mdm2-mdm4-gbm.json', function(data)  {
 
   var renderers = _.map(rows, getDefaultRenderer);
 
-  // This is assuming a row render for each row. This doesn't make sense because
-  // getRowRenderer is really going to figure out the renderer from the feature type (gene or clinical),
-  // not from the row.
-  oncoprint.withRows(rows).withRowRenderers(renderers);
+  oncoprint.withRows(rows).withRenderers({
+    'genomic': function(d) { },
+    'clinical': function(d) { }
+  });
 
   d3.select('#main').call(chart);
 
