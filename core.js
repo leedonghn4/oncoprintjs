@@ -10,7 +10,7 @@ function transform(x,y) {
 }
 
 var Oncoprint = function() {
-  var config = { row_padding: 15 };
+  var config = { row_height: 15 };
   var container_width = 100;
   var rows = [];
   var svg_height = 95;
@@ -20,7 +20,7 @@ var Oncoprint = function() {
 
     var svg = container.append('svg')
       .attr('width', svg_width)
-      .attr('height', config.row_padding * rows.length);
+      .attr('height', config.row_height * rows.length);
 
     container.style('width', container_width + "px")
       .style('display', 'inline-block')
@@ -33,7 +33,7 @@ var Oncoprint = function() {
     var row_groups = svg.selectAll('g').data(rows)
       .enter().append('g')
         .attr('transform', function(d,i) {
-          return transform(0, i * config.row_padding);
+          return transform(0, i * config.row_height);
         });
 
     // TODO I think that this could be replaced with a `d3.call` to the row_groups.
@@ -104,11 +104,11 @@ d3.json("tp53-mdm2-mdm4-gbm.json", function(data) {
     row.push(gene_renderer);
   });
 
-  var row_padding = 25;
+  var row_height = 25;
 
   oncoprint.container_width(500);
   oncoprint.svg_width((config.rect_width + rect_padding) * rows[0].length);
-  oncoprint.config({row_padding: row_padding});
+  oncoprint.config({row_height: row_height});
   oncoprint.rows(rows);
 
   d3.select('#main').call(oncoprint);
