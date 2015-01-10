@@ -10,12 +10,19 @@ function transform(x,y) {
 }
 
 var Oncoprint = function() {
-  var config = {};
-  config.row_padding || 15;
+  var config = { row_padding: 15 };
+  var container_width = 100;
   var rows = [];
+  var svg_width = 95;
 
   var me = function(container) {
-    var svg = container.append('svg');
+
+    var svg = container.append('svg').attr('width', svg_width);
+
+    container.style('width', container_width + "px")
+      .style('display', 'inline-block')
+      .style('overflow-x', 'auto')
+      .style('overflow-y', 'hidden');
 
     // note that this is removing the renderer from each row.
     var renderers = _.map(rows, function(row) { return row.pop(); });
@@ -49,21 +56,32 @@ var Oncoprint = function() {
     return me;
   }
 
+  me.container_width = function(value) {
+    if (!arguments.length) return container_width;
+    container_width = value;
+    return me;
+  }
+
+  me.svg_width = function(value) {
+    if (!arguments.length) return svg_width;
+    svg_width = value;
+    return me;
+  }
+
   return me;
 };
 
-// note that the config and the renderers are going to have to play nice together.
-// I think that the consequence of this is that the core module will predominantely
-// be used by people "in the know." As always, the question is what parts to separate.
 var config = { rect_height: 20, rect_width: 10 };
 config.cna_fills = {null: 'grey', undefined: 'grey', 'AMPLIFIED': 'red', "HOMODELETED": 'blue'};
+
+var rect_padding = 3;
 
 var gene_renderer = function(selection) {
   var row_elements = selection.selectAll('g').data(function(d) { return d; })
     .enter().append('g');
 
   row_elements.attr('transform', function(d, i) {
-    return transform(i * (config.rect_width + 3), 0);
+    return transform(i * (config.rect_width + rect_padding), 0);
   });
 
   row_elements.append('rect')
@@ -73,18 +91,20 @@ var gene_renderer = function(selection) {
 };
 
 d3.json("tp53-mdm2-mdm4-gbm.json", function(data) {
-    var oncoprint = Oncoprint();
+  var oncoprint = Oncoprint();
 
-    // break into rows
-    rows = _.chain(data).groupBy(function(d) { return d.gene; }).values().value();
+  // break into rows
+  rows = _.chain(data).groupBy(function(d) { return d.gene; }).values().value();
 
-    // push selection renderer for each row
-    _.each(rows, function(row) {
-      row.push(gene_renderer);
-    });
+  // push selection renderer for each row
+  _.each(rows, function(row) {
+    row.push(gene_renderer);
+  });
 
-    oncoprint.rows(rows);
-    oncoprint.config({row_padding: 25});
+  oncoprint.container_width(500);
+  oncoprint.svg_width((config.rect_width + rect_padding) * rows[0].length);
+  oncoprint.config({row_padding: 25});
+  oncoprint.rows(rows);
 
-    d3.select('#main').call(oncoprint);
+  d3.select('#main').call(oncoprint);
 });
