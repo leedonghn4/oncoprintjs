@@ -1,8 +1,3 @@
-
-// TODO while in dev mode clear out #main each time this file is executed
-console.log("clearing #main");
-d3.select('#main').selectAll("*").remove();
-
 // TODO wait for gulp.
 //var _ = require('underscore');
 //var d3 = require('d3');
@@ -15,8 +10,9 @@ function transform(x,y) {
 }
 
 var Oncoprint = function() {
-  var config;
-  var rows;
+  var config = {};
+  config.row_padding || 15;
+  var rows = [];
 
   var me = function(container) {
     var svg = container.append('svg');
@@ -26,16 +22,19 @@ var Oncoprint = function() {
 
     var row_groups = svg.selectAll('g').data(rows)
       .enter().append('g')
-        .attr('transform', function(d,i) { return transform(0, i * config.row_padding); });
+        .attr('transform', function(d,i) {
+          return transform(0, i * config.row_padding);
+        });
 
+    // TODO I think that this could be replaced with a `d3.call` to the row_groups.
     // if you run `d3.each` on a selection, d3 will iterate over the data bound
     // to an element, not the element itself. So some gymnastics is required to
     // get access to specific layers of the nested selection.
     _.chain(row_groups[0]       // raw list of DOM elements, i.e. peel away d3
-            ).map(d3.select)    // reselect each one individually
-        .each(function(row,i) {
-            renderers[i](row);
-        }).value();
+           ).map(d3.select)    // reselect each one individually
+    .each(function(row,i) {
+      renderers[i](row);
+    }).value();
   };
 
   me.rows = function(value) {
@@ -60,13 +59,12 @@ var config = { rect_height: 20, rect_width: 10 };
 config.cna_fills = {null: 'grey', undefined: 'grey', 'AMPLIFIED': 'red', "HOMODELETED": 'blue'};
 
 var gene_renderer = function(selection) {
-  selection.attr('transform', function(d, i) { return transform(0, i * (config.rect_height * 1.5)); });
-
   var row_elements = selection.selectAll('g').data(function(d) { return d; })
     .enter().append('g');
 
-  row_elements
-    .attr('transform', function(d, i) { return transform(i * (config.rect_width + 3), 0); });
+  row_elements.attr('transform', function(d, i) {
+    return transform(i * (config.rect_width + 3), 0);
+  });
 
   row_elements.append('rect')
     .attr('fill', function(d) { return config.cna_fills[d.cna]; })
@@ -82,14 +80,11 @@ d3.json("tp53-mdm2-mdm4-gbm.json", function(data) {
 
     // push selection renderer for each row
     _.each(rows, function(row) {
-    row.push(gene_renderer);
-    // row.push(_.identity);
+      row.push(gene_renderer);
     });
 
     oncoprint.rows(rows);
     oncoprint.config({row_padding: 25});
 
-    // d3.select('#main').call(oncoprint);
-
-    oncoprint(d3.select("#main"));
+    d3.select('#main').call(oncoprint);
 });
