@@ -13,11 +13,14 @@ var Oncoprint = function() {
   var config = { row_padding: 15 };
   var container_width = 100;
   var rows = [];
+  var svg_height = 95;
   var svg_width = 95;
 
   var me = function(container) {
 
-    var svg = container.append('svg').attr('width', svg_width);
+    var svg = container.append('svg')
+      .attr('width', svg_width)
+      .attr('height', config.row_padding * rows.length);
 
     container.style('width', container_width + "px")
       .style('display', 'inline-block')
@@ -101,9 +104,11 @@ d3.json("tp53-mdm2-mdm4-gbm.json", function(data) {
     row.push(gene_renderer);
   });
 
+  var row_padding = 25;
+
   oncoprint.container_width(500);
   oncoprint.svg_width((config.rect_width + rect_padding) * rows[0].length);
-  oncoprint.config({row_padding: 25});
+  oncoprint.config({row_padding: row_padding});
   oncoprint.rows(rows);
 
   d3.select('#main').call(oncoprint);
