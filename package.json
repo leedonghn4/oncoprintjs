@@ -1,24 +1,29 @@
 {
   "name": "oncoprintjs",
-  "version": "0.0",
+  "version": "0.0.1",
   "description": "OncoPrint visualizes cancer genomic data.",
   "author": "Gideon Dresdner <gideond@gmail.com>",
-  "contributors": [{
-  "name": "JJ Gao",
-  "email": "jianjiong.gao@gmail.com"
-}],
+  "contributors": [
+    {
+      "name": "JJ Gao",
+      "email": "jianjiong.gao@gmail.com"
+    }
+  ],
   "repository": {
-  "type": "git",
-  "url": "https://github.com/cBioPortal/oncoprintjs.git"
-},
+    "type": "git",
+    "url": "https://github.com/cBioPortal/oncoprintjs.git"
+  },
   "keywords": [
-  "cancer",
-  "genomics",
-  "cancergenomics",
-  "tcga",
-  "mskcc"
-],
+    "cancer",
+    "genomics",
+    "cancergenomics",
+    "tcga",
+    "mskcc"
+  ],
   "subdomain": "foobar",
   "analyze": true,
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "gulp": "^3.8.10"
+  }
 }
