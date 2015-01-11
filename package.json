@@ -23,7 +23,11 @@
   "subdomain": "foobar",
   "analyze": true,
   "license": "MIT",
+  "dependencies": {
+      "underscore": "1.7.0"
+  },
   "devDependencies": {
-    "gulp": "^3.8.10"
+    "gulp": "^3.8.10",
+    "gulp-browserify": "^0.5.1"
   }
 }

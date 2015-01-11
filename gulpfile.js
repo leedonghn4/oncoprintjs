@@ -1,25 +1,34 @@
-var gulp = require('gulp'),
-    autoprefixer = require('gulp-autoprefixer'),
-    minifycss = require('gulp-minify-css'),
-    jshint = require('gulp-jshint'),
-    uglify = require('gulp-uglify'),
-    rename = require('gulp-rename'),
-    concat = require('gulp-concat'),
-    notify = require('gulp-notify'),
+'use strict';
+
+var autoprefixer = require('gulp-autoprefixer'),
+    browserify = require('gulp-browserify'),
     cache = require('gulp-cache'),
+    concat = require('gulp-concat'),
+    del = require('del'),
+    gulp = require('gulp'),
+    jshint = require('gulp-jshint'),
     livereload = require('gulp-livereload'),
-    del = require('del');
+    minifycss = require('gulp-minify-css'),
+    notify = require('gulp-notify'),
+    rename = require('gulp-rename'),
+    uglify = require('gulp-uglify');
 
 gulp.task('js', function() {
     return  gulp.src('./src/js/**/*.js')
                 .pipe(jshint())
                 .pipe(jshint.reporter('default'))
-                .pipe(concat('main.js'))
+                .pipe(browserify({
+                  standalone: "foobar",
+                  insertGlobals : true,
+                  // debug : !gulp.env.production
+                  debug : true  // TODO do something smarter
+                }))
+                .pipe(concat('oncoprint.js'))
                 .pipe(gulp.dest('dist/assets/js'))
                 .pipe(rename({suffice: 'min'}))
                 .pipe(uglify())
                 .pipe(gulp.dest('dist/assets/js'))
-                .pipe(notify({ message: 'Done us JavaScript' }));
+                .pipe(notify({ message: 'Done with JavaScript' }));
 });
 
 
