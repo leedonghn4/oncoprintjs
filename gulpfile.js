@@ -22,10 +22,20 @@ gulp.task('js', function() {
                 .pipe(notify({ message: 'Done us JavaScript' }));
 });
 
+
+// Clean
 gulp.task('clean', function(cb) {
     del(['dist'], cb)
 });
 
+
+// Default
 gulp.task('default', ['clean'], function() {
     gulp.start('js');
+});
+
+
+// Watch
+gulp.task('watch', function() {
+  gulp.watch('src/js/**/*.js', ['js']);
 });
