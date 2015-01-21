@@ -13,22 +13,31 @@ var autoprefixer = require('gulp-autoprefixer'),
     rename = require('gulp-rename'),
     uglify = require('gulp-uglify');
 
+//gulp.task('js', function() {
+//    return  gulp.src('./src/js/**/*.js')
+//                .pipe(jshint())
+//                .pipe(jshint.reporter('default'))
+//                .pipe(browserify({
+//                  standalone: "foobar",
+//                  insertGlobals : true,
+//                  // debug : !gulp.env.production
+//                  debug : true  // TODO do something smarter
+//                }))
+//                .pipe(concat('oncoprint.js'))
+//                .pipe(gulp.dest('dist/assets/js'))
+//                .pipe(rename({suffice: 'min'}))
+//                .pipe(uglify())
+//                .pipe(gulp.dest('dist/assets/js'))
+//                .pipe(notify({ message: 'Done with JavaScript' }));
+//});
+
 gulp.task('js', function() {
-    return  gulp.src('./src/js/**/*.js')
-                .pipe(jshint())
-                .pipe(jshint.reporter('default'))
-                .pipe(browserify({
-                  standalone: "foobar",
-                  insertGlobals : true,
-                  // debug : !gulp.env.production
-                  debug : true  // TODO do something smarter
-                }))
-                .pipe(concat('oncoprint.js'))
-                .pipe(gulp.dest('dist/assets/js'))
-                .pipe(rename({suffice: 'min'}))
-                .pipe(uglify())
-                .pipe(gulp.dest('dist/assets/js'))
-                .pipe(notify({ message: 'Done with JavaScript' }));
+    return gulp.src("./src/js/index.js")
+        .pipe(jshint.reporter('default'))
+        .pipe(browserify())
+        .pipe(rename('bundle.js'))
+        .pipe(gulp.dest('dist/asset/js'))
+        ;
 });
 
 
