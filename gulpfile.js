@@ -32,14 +32,13 @@ var autoprefixer = require('gulp-autoprefixer'),
 //});
 
 gulp.task('js', function() {
-    return gulp.src("./src/js/index.js")
+    return gulp.src("./src/js/genomic.js")
         .pipe(jshint.reporter('default'))
         .pipe(browserify())
-        .pipe(rename('bundle.js'))
+        .pipe(rename('genomic-bundle.js'))
         .pipe(gulp.dest('dist/asset/js'))
         ;
 });
-
 
 // Clean
 gulp.task('clean', function(cb) {

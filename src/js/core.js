@@ -1,13 +1,8 @@
 // TODO wait for gulp.
 var _ = require('underscore');
+var utils = require('./utils');
 //var d3 = require('d3');
 //var data = require('./tp53-mdm2-mdm4-gbm.json');
-
-// utils
-function transform(x,y) {
-    // TODO fix name
-  return "translate(" + x + "," + y + ")";
-}
 
 var Oncoprint = function() {
   var config = { row_height: 15 };
@@ -33,7 +28,7 @@ var Oncoprint = function() {
     var row_groups = svg.selectAll('g').data(rows)
       .enter().append('g')
         .attr('transform', function(d,i) {
-          return transform(0, i * config.row_height);
+          return utils.translate(0, i * config.row_height);
         });
 
     // TODO I think that this could be replaced with a `d3.call` to the row_groups.
@@ -75,50 +70,3 @@ var Oncoprint = function() {
 };
 
 module.exports=Oncoprint;
-
-//
-// This is the user code. It needs to go elsewhere and require Oncoprint.
-//
-
-//var config = { rect_height: 20, rect_width: 10 };
-//config.cna_fills = {null: 'grey', undefined: 'grey', 'AMPLIFIED': 'red', "HOMODELETED": 'blue'};
-//
-//var rect_padding = 3;
-//
-//var gene_renderer = function(selection) {
-//    var row_elements = selection.selectAll('g').data(function(d) { return d; })
-//        .enter().append('g');
-//
-//    row_elements.attr('transform', function(d, i) {
-//        return transform(i * (config.rect_width + rect_padding), 0);
-//    });
-//
-//    row_elements.append('rect')
-//        .attr('fill', function(d) { return config.cna_fills[d.cna]; })
-//        .attr('height', config.rect_height)
-//        .attr('width', config.rect_width);
-//};
-//
-//d3.json("tp53-mdm2-mdm4-gbm.json", function(data) {
-//    var oncoprint = Oncoprint();
-//
-//    // break into rows
-//    rows = _.chain(data).groupBy(function(d) { return d.gene; }).values().value();
-//
-//    // push selection renderer for each row
-//    _.each(rows, function(row) {
-//        row.push(gene_renderer);
-//    });
-//
-//    var row_height = 25;
-//
-//    oncoprint.container_width(500);
-//    oncoprint.svg_width((config.rect_width + rect_padding) * rows[0].length);
-//    oncoprint.config({row_height: row_height});
-//    oncoprint.rows(rows);
-//
-//    d3.select('#main').call(oncoprint);
-//});
-
-
-module.exports = function (n) { console.log("HELLO"); return n * 111 };
