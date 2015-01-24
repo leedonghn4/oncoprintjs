@@ -1,50 +1,33 @@
 'use strict';
 
-var autoprefixer = require('gulp-autoprefixer'),
-    browserify = require('gulp-browserify'),
-    cache = require('gulp-cache'),
-    concat = require('gulp-concat'),
-    del = require('del'),
-    gulp = require('gulp'),
-    jshint = require('gulp-jshint'),
-    livereload = require('gulp-livereload'),
-    minifycss = require('gulp-minify-css'),
-    notify = require('gulp-notify'),
-    rename = require('gulp-rename'),
-    uglify = require('gulp-uglify');
-
-//gulp.task('js', function() {
-//    return  gulp.src('./src/js/**/*.js')
-//                .pipe(jshint())
-//                .pipe(jshint.reporter('default'))
-//                .pipe(browserify({
-//                  standalone: "foobar",
-//                  insertGlobals : true,
-//                  // debug : !gulp.env.production
-//                  debug : true  // TODO do something smarter
-//                }))
-//                .pipe(concat('oncoprint.js'))
-//                .pipe(gulp.dest('dist/assets/js'))
-//                .pipe(rename({suffice: 'min'}))
-//                .pipe(uglify())
-//                .pipe(gulp.dest('dist/assets/js'))
-//                .pipe(notify({ message: 'Done with JavaScript' }));
-//});
+var autoprefixer = require('gulp-autoprefixer');
+var browserify = require('browserify');
+var cache = require('gulp-cache');
+var concat = require('gulp-concat');
+var del = require('del');
+var gulp = require('gulp');
+var jshint = require('gulp-jshint');
+var livereload = require('gulp-livereload');
+var minifycss = require('gulp-minify-css');
+var notify = require('gulp-notify');
+var rename = require('gulp-rename');
+var source = require('vinyl-source-stream');
+var streamify = require('gulp-streamify');
+var uglify = require('gulp-uglify');
 
 gulp.task('js', function() {
-    return gulp.src("./src/js/genomic.js")
-        .pipe(jshint.reporter('default'))
-        .pipe(browserify())
-        .pipe(rename('genomic-bundle.js'))
-        .pipe(gulp.dest('dist/asset/js'))
-        ;
-});
+  browserify({entries: './src/js/genomic.js',
+              debug: process.env.production    // TODO weird, is this backwards??
+             }).bundle()
+  .pipe(source('genomic.js'))
+  .pipe(rename('genomic-bundle.js'))
+  .pipe(gulp.dest('dist/asset/js'))
+  .pipe(streamify(uglify())) .pipe(notify("Done with JavaScript.")) });
 
 // Clean
 gulp.task('clean', function(cb) {
     del(['dist'], cb)
 });
-
 
 // Default
 gulp.task('default', ['clean'], function() {
