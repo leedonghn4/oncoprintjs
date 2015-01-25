@@ -1,8 +1,6 @@
-// TODO wait for gulp.
+var d3 = require('d3');
 var _ = require('underscore');
 var utils = require('./utils');
-//var d3 = require('d3');
-//var data = require('./tp53-mdm2-mdm4-gbm.json');
 
 var Oncoprint = function() {
   var config = { row_height: 15 };

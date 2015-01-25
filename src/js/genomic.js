@@ -1,3 +1,4 @@
+var d3 = require('d3');
 var _ = require("underscore");
 var Oncoprint = require('./core');
 var utils = require("./utils");

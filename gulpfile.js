@@ -15,6 +15,7 @@ var source = require('vinyl-source-stream');
 var streamify = require('gulp-streamify');
 var uglify = require('gulp-uglify');
 
+// JavaScript
 gulp.task('js', function() {
   browserify({entries: './src/js/genomic.js',
               debug: process.env.production    // TODO weird, is this backwards??
@@ -33,7 +34,6 @@ gulp.task('clean', function(cb) {
 gulp.task('default', ['clean'], function() {
     gulp.start('js');
 });
-
 
 // Watch
 gulp.task('watch', function() {
