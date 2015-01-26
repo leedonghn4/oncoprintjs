@@ -1,44 +1,70 @@
 var d3 = require('d3');
-var _ = require("underscore");
+var _ = require('underscore');
+
+var renderers = require('./renderers');
 var Oncoprint = require('./core');
-var utils = require("./utils");
+var utils = require('./utils');
 
-var config = { rect_height: 20, rect_width: 10 };
-config.cna_fills = {null: 'grey', undefined: 'grey', 'AMPLIFIED': 'red', "HOMODELETED": 'blue'};
+function compute_svg_width(rect_width, rect_padding, row_length) {
+  return (rect_width + rect_padding) * row_length;
+}
 
-var rect_padding = 3;
+var oncoprint = Oncoprint();
 
-var gene_renderer = function(selection) {
-  var row_elements = selection.selectAll('g').data(function(d) { return d; })
-  .enter().append('g');
+// break into rows
+rows = _.chain(data).groupBy(function(d) { return d.gene; }).values().value();
 
-  row_elements.attr('transform', function(d, i) {
-    return utils.translate(i * (config.rect_width + rect_padding), 0);
-  });
+// default configuration for the gene renderer.
+var config = {
+  rect_height: 20,
+  rect_padding: 3,
+  rect_width: 10,
 
-  row_elements.append('rect')
-  .attr('fill', function(d) { return config.cna_fills[d.cna]; })
-  .attr('height', config.rect_height)
-  .attr('width', config.rect_width);
+  cna_fills: {
+    null: 'grey',
+    undefined: 'grey',
+    AMPLIFIED: 'red',
+    HOMODELETED: 'blue'
+  }
 };
 
-d3.json("tp53-mdm2-mdm4-gbm.json", function(data) {
-  var oncoprint = Oncoprint();
+var gene_renderer = renderers.gene(config);
 
-  // break into rows
-  rows = _.chain(data).groupBy(function(d) { return d.gene; }).values().value();
-
-  // push selection renderer for each row
-  _.each(rows, function(row) {
-    row.push(gene_renderer);
-  });
-
-  var row_height = 25;
-
-  oncoprint.container_width(500);
-  oncoprint.svg_width((config.rect_width + rect_padding) * rows[0].length);
-  oncoprint.config({row_height: row_height});
-  oncoprint.rows(rows);
-
-  d3.select('#main').call(oncoprint);
+// push selection renderer for each row
+_.each(rows, function(row) {
+  row.push(gene_renderer);
 });
+
+var genomic = function() {
+  var row_height = 25;
+  var width = 500;
+  var rows = [];
+
+  var me = function() {
+    oncoprint.container_width(width);
+    oncoprint.svg_width(compute_svg_width(config.rect_width, config.rect_padding, rows[0].length));
+    oncoprint.config({row_height: row_height});
+    oncoprint.rows(rows);
+    d3.select('#main').call(oncoprint);
+  };
+
+  me.rows = function(value) {
+    if (!arguments.length) return rows;
+    rows = value;
+    return me;
+  };
+
+  me.row_height = function(value) {
+    if (!arguments.length) return row_height;
+    row_height = value;
+    return me;
+  };
+
+  me.width = function(value) {
+    if (!arguments.length) return width;
+    width = value;
+    return me;
+  };
+
+  return me;
+};
