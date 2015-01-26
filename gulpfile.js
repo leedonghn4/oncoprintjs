@@ -23,7 +23,8 @@ gulp.task('js', function() {
   .pipe(source('genomic.js'))
   .pipe(rename('genomic-bundle.js'))
   .pipe(gulp.dest('dist/asset/js'))
-  .pipe(streamify(uglify())) .pipe(notify("Done with JavaScript.")) });
+  .pipe(streamify(uglify())) .pipe(notify("Done with JavaScript."))
+});
 
 // Clean
 gulp.task('clean', function(cb) {
