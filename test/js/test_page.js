@@ -10,7 +10,7 @@ window.test_for_genomic_data = function(filename, div_selector_string) {
     // break into rows
     rows = _.chain(data).groupBy(function(d) { return d.gene; }).values().value();
 
-    oncoprint.width(500);
+    oncoprint.width(750);
     oncoprint.row_height(25);
     oncoprint.rows(rows);
 
