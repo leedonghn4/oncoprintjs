@@ -11,13 +11,18 @@ var core = function() {
   var container_width = 100;
   var element_padding = 1;
   var element_width = 1;
-  var rows = [];
+  var rows = undefined;
   var svg_height = 95;
 
   var me = function(container) {
 
+    // validation
+    if (rows === undefined) {
+      throw "'rows' is unset."
+    }
+
     var svg = container.append('svg')
-      .attr('width', compute_svg_width(element_width, element_padding, (rows[0] || []).length))
+      .attr('width', compute_svg_width(element_width, element_padding, rows[0].length))
       .attr('height', config.row_height * rows.length);
 
     container.style('width', container_width + "px")

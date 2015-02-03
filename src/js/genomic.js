@@ -40,7 +40,7 @@ var genomic = function() {
 
     // push selection renderer for each row
     value = _.map(value, function(row) {
-      row.concat([gene_renderer]);
+      return row.concat([gene_renderer]);
     });
 
     rows = value;
