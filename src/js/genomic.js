@@ -5,35 +5,21 @@ var renderers = require('./renderers');
 var Oncoprint = require('./core');
 var utils = require('./utils');
 
-function compute_svg_width(rect_width, rect_padding, row_length) {
-  return (rect_width + rect_padding) * row_length;
-}
-
 var oncoprint = Oncoprint();
 
-// break into rows
-rows = _.chain(data).groupBy(function(d) { return d.gene; }).values().value();
+var config = { rect_height: 20,
+               rect_padding: 3,
+               rect_width: 10,
 
-// default configuration for the gene renderer.
-var config = {
-  rect_height: 20,
-  rect_padding: 3,
-  rect_width: 10,
-
-  cna_fills: {
-    null: 'grey',
-    undefined: 'grey',
-    AMPLIFIED: 'red',
-    HOMODELETED: 'blue'
-  }
-};
+               cna_fills: {
+                 null: 'grey',
+                 undefined: 'grey',
+                 AMPLIFIED: 'red',
+                 HOMODELETED: 'blue'
+               }
+             };
 
 var gene_renderer = renderers.gene(config);
-
-// push selection renderer for each row
-_.each(rows, function(row) {
-  row.push(gene_renderer);
-});
 
 var genomic = function() {
   var row_height = 25;
@@ -42,7 +28,8 @@ var genomic = function() {
 
   var me = function() {
     oncoprint.container_width(width);
-    oncoprint.svg_width(compute_svg_width(config.rect_width, config.rect_padding, rows[0].length));
+    oncoprint.element_width(config.rect_width);
+    oncoprint.element_padding(config.rect_padding);
     oncoprint.config({row_height: row_height});
     oncoprint.rows(rows);
     d3.select('#main').call(oncoprint);
@@ -50,6 +37,12 @@ var genomic = function() {
 
   me.rows = function(value) {
     if (!arguments.length) return rows;
+
+    // push selection renderer for each row
+    value = _.map(value, function(row) {
+      row.concat([gene_renderer]);
+    });
+
     rows = value;
     return me;
   };
@@ -68,3 +61,5 @@ var genomic = function() {
 
   return me;
 };
+
+module.exports = genomic;

@@ -17,7 +17,7 @@ var uglify = require('gulp-uglify');
 
 // JavaScript
 gulp.task('js', function() {
-  browserify({entries: './src/js/genomic.js',
+  browserify({entries: './src/js/main.js',
               debug: process.env.production    // TODO weird, is this backwards??
              }).bundle()
   .pipe(source('genomic.js'))
