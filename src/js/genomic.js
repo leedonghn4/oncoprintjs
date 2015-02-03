@@ -8,16 +8,17 @@ var utils = require('./utils');
 var oncoprint = Oncoprint();
 
 var config = { rect_height: 20,
-               rect_padding: 3,
-               rect_width: 10,
+              rect_padding: 3,
+              rect_width: 10,
+              mutation_fill: 'green',
 
-               cna_fills: {
-                 null: 'grey',
-                 undefined: 'grey',
-                 AMPLIFIED: 'red',
-                 HOMODELETED: 'blue'
-               }
-             };
+              cna_fills: {
+              null: 'grey',
+              undefined: 'grey',
+              AMPLIFIED: 'red',
+              HOMODELETED: 'blue'
+             }
+};
 
 var gene_renderer = renderers.gene(config);
 
