@@ -26,13 +26,13 @@ var genomic = function() {
   var width = 500;
   var rows = [];
 
-  var me = function() {
+  var me = function(container) {
     oncoprint.container_width(width);
     oncoprint.element_width(config.rect_width);
     oncoprint.element_padding(config.rect_padding);
     oncoprint.config({row_height: row_height});
     oncoprint.rows(rows);
-    d3.select('#main').call(oncoprint);
+    container.call(oncoprint);
   };
 
   me.rows = function(value) {
