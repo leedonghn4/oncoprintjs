@@ -18,7 +18,8 @@ var uglify = require('gulp-uglify');
 // JavaScript
 gulp.task('js', function() {
   browserify({entries: './src/js/main.js',
-              debug: process.env.production    // TODO weird, is this backwards??
+              // debug: process.env.production    // TODO weird, is this backwards??
+              debug: true
              }).bundle()
   .pipe(source('genomic.js'))
   .pipe(rename('genomic-bundle.js'))
