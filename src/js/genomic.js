@@ -2,10 +2,10 @@ var d3 = require('d3');
 var _ = require('underscore');
 
 var renderers = require('./renderers');
-var Oncoprint = require('./core');
+var core = require('./core');
 var utils = require('./utils');
 
-var oncoprint = Oncoprint();
+var oncoprint_core = core();
 
 var config = { rect_height: 20,
               rect_padding: 3,
@@ -22,18 +22,28 @@ var config = { rect_height: 20,
 
 var gene_renderer = renderers.gene(config);
 
+var gene_label_renderer = function(row) {
+  var gene_name = row[0].gene;
+  // TODO also do a percent calculation.
+  return gene_name;
+};
+
 var genomic = function() {
   var row_height = 25;
   var width = 500;
   var rows = [];
 
   var me = function(container) {
-    oncoprint.container_width(width);
-    oncoprint.element_width(config.rect_width);
-    oncoprint.element_padding(config.rect_padding);
-    oncoprint.config({row_height: row_height});
-    oncoprint.rows(rows);
-    container.call(oncoprint);
+    oncoprint_core.config({row_height: row_height});
+    oncoprint_core.container_width(width);
+    oncoprint_core.element_width(config.rect_width);
+    oncoprint_core.element_padding(config.rect_padding);
+    oncoprint_core.label_renderers(
+      // just want gene labels for now.
+      _.times(rows.length, _.constant(gene_label_renderer))
+    );
+    oncoprint_core.rows(rows);
+    container.call(oncoprint_core);
   };
 
   me.rows = function(value) {
