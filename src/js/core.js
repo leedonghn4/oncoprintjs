@@ -43,10 +43,15 @@ var core = function() {
     // note that this is removing the renderer from each row.
     var renderers = _.map(rows, function(row) { return row.pop(); });
 
+    label_container.append('svg').append('g').selectAll('text')
+      .attr('font-size', '12px')
+      .append('tspan')
+
     for (var i=0; i<rows.length; i++) {
       var label = label_renderers[i](rows[i]);
     }
 
+    // setup the rows by binding data and vertically positioning.
     var row_groups = svg.selectAll('g').data(rows)
       .enter().append('g')
         .attr('transform', function(d,i) {
@@ -57,11 +62,11 @@ var core = function() {
     // if you run `d3.each` on a selection, d3 will iterate over the data bound
     // to an element, not the element itself. So some gymnastics is required to
     // get access to specific layers of the nested selection.
-    _.chain(row_groups[0]       // raw list of DOM elements, i.e. peel away d3
-           ).map(d3.select)    // reselect each one individually
-    .each(function(row,i) {
-      renderers[i](row);
-    }).value();
+    var raw_dom = row_groups[0];       // raw list of DOM elements, i.e. peel away d3
+    _.chain(raw_dom).map(d3.select)    // reselect each one individually
+      .each(function(row,i) {
+        renderers[i](row);             // apply the renderer to each row
+      }).value();
   };
 
   //
