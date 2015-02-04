@@ -38,16 +38,17 @@ gulp.task('test', function() {
 });
 
 // JavaScript
-gulp.task('js', function() {
-  browserify({entries: './src/js/main.js',
-              debug: !process.env.production
-             }).bundle()
-  .pipe(source('genomic.js'))
-  .pipe(rename('genomic-oncoprint-bundle.js'))
-  .pipe(gulp.dest('dist/asset/js'))
-  .pipe(streamify(uglify()))
-  .pipe(notify("Done with JavaScript."))
-});
+// TODO need to figure out what to compile other than test code...
+//gulp.task('js', function() {
+//  browserify({entries: './src/js/main.js',
+//              debug: !process.env.production
+//             }).bundle()
+//  .pipe(source('genomic.js'))
+//  .pipe(rename('genomic-oncoprint-bundle.js'))
+//  .pipe(gulp.dest('dist/asset/js'))
+//  .pipe(streamify(uglify()))
+//  .pipe(notify("Done with JavaScript."))
+//});
 
 // Clean
 gulp.task('clean', function(cb) {
@@ -61,5 +62,5 @@ gulp.task('default', ['clean'], function() {
 
 // Watch
 gulp.task('watch', function() {
-  gulp.watch(['src/js/**/*.js', 'test/*.html', 'test/js/**/*.js'], ['js', 'test']);
+  gulp.watch(['src/js/**/*.js', 'test/*.html', 'test/js/**/*.js'], ['test']);
 });
