@@ -22,11 +22,22 @@ var config = { rect_height: 20,
 
 var gene_renderer = renderers.gene(config);
 
-var gene_label_renderer = function(row) {
-  var gene_name = row[0].gene;
-  // TODO also do a percent calculation.
-  return gene_name;
+function is_sample_genetically_altered(datum) {
+  return datum.cna !== undefined
+    || datum.mutation !== undefined
+    || datum.rna !== undefined
+    || datum.protein !== undefined;
 };
+
+function row_to_labels(row) {
+  var percent_altered = _.filter(row, is_sample_genetically_altered).length / row.length;
+  percent_altered = Math.round(percent_altered*100);
+  return [{align: 'left', text: row[0].gene}, {align: 'right', text: percent_altered + "%"}];
+};
+
+function rows_to_labels(rows) {
+  return _.flatten(_.map(rows, row_to_labels));
+}
 
 var genomic = function() {
   var row_height = 25;
@@ -38,10 +49,7 @@ var genomic = function() {
     oncoprint_core.container_width(width);
     oncoprint_core.element_width(config.rect_width);
     oncoprint_core.element_padding(config.rect_padding);
-    oncoprint_core.label_renderers(
-      // just want gene labels for now.
-      _.times(rows.length, _.constant(gene_label_renderer))
-    );
+    oncoprint_core.labels(rows_to_labels(rows));
     oncoprint_core.rows(rows);
     container.call(oncoprint_core);
   };

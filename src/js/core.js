@@ -11,7 +11,7 @@ var core = function() {
   var container_width = 100;
   var element_padding = 1;
   var element_width = 1;
-  var label_renderers = [];
+  var labels = [];
   var rows = undefined;
   var svg_height = 95;
 
@@ -43,13 +43,23 @@ var core = function() {
     // note that this is removing the renderer from each row.
     var renderers = _.map(rows, function(row) { return row.pop(); });
 
+    var element_height = 20;
+
+    // TODO!
     label_container.append('svg').append('g').selectAll('text')
+      .data(labels)
+      .enter()
+      .append('text')
+      .attr('text-anchor', function(d) {
+        return d.align === 'right' ? 'end' : 'start';
+      })
+      .attr('x', function(d) { return d.align === 'right' ? 50 : 0 })
+      .attr('y', function(d, i) {
+        return (element_padding + 20 - 12 / 2) + i * 1.5 * (element_padding + 20 - 12 / 2);
+      })
       .attr('font-size', '12px')
       .append('tspan')
-
-    for (var i=0; i<rows.length; i++) {
-      var label = label_renderers[i](rows[i]);
-    }
+      .text(function(d) { return d.text; })
 
     // setup the rows by binding data and vertically positioning.
     var row_groups = svg.selectAll('g').data(rows)
@@ -103,9 +113,9 @@ var core = function() {
     return me;
   };
 
-  me.label_renderers = function(value) {
-    if (!arguments.length) return label_renderers;
-    label_renderers = value;
+  me.labels = function(value) {
+    if (!arguments.length) return labels;
+    labels = value;
     return me;
   };
 
