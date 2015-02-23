@@ -1,43 +1,38 @@
 var d3 = require('d3');
 var _ = require('underscore');
-
 var renderers = require('./renderers');
 var core = require('./core');
 var utils = require('./utils');
 
 var oncoprint_core = core();
+var gene_renderer = renderers.gene();
 
-var config = { rect_height: 20,
-              rect_padding: 3,
-              rect_width: 10,
-              mutation_fill: 'green',
+var foobar = function(config) {
+  var container = undefined;
 
-              cna_fills: {
-              null: 'grey',
-              undefined: 'grey',
-              AMPLIFIED: 'red',
-              HOMODELETED: 'blue'
-             }
+  var fbar = function(div) {
+    container = div;
+  };
+
+  fbar.addRow = function(row) {
+    var data = core.extract_data(d3.select(container));
+    data.push(row);
+
+    // ...
+  };
+
+  fbar.addRows = function(rows) {
+    var data = core.extract_data(d3.select(container));
+    data.concat(rows);
+  };
+
+  if (arguments.length === 1) {
+    return fbar;
+  }
+  else {
+    return fbar(arguments[1]);
+  }
 };
-
-var gene_renderer = renderers.gene(config);
-
-function is_sample_genetically_altered(datum) {
-  return datum.cna !== undefined
-    || datum.mutation !== undefined
-    || datum.rna !== undefined
-    || datum.protein !== undefined;
-};
-
-function row_to_labels(row) {
-  var percent_altered = _.filter(row, is_sample_genetically_altered).length / row.length;
-  percent_altered = Math.round(percent_altered*100);
-  return [{align: 'left', text: row[0].gene}, {align: 'right', text: percent_altered + "%"}];
-};
-
-function rows_to_labels(rows) {
-  return _.flatten(_.map(rows, row_to_labels));
-}
 
 var genomic = function() {
   var row_height = 25;
@@ -49,7 +44,7 @@ var genomic = function() {
     oncoprint_core.container_width(width);
     oncoprint_core.element_width(config.rect_width);
     oncoprint_core.element_padding(config.rect_padding);
-    oncoprint_core.labels(rows_to_labels(rows));
+    oncoprint_core.labels(utils.rows_to_labels(rows));
     oncoprint_core.rows(rows);
     container.call(oncoprint_core);
   };

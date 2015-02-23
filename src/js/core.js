@@ -2,17 +2,12 @@ var d3 = require('d3');
 var _ = require('underscore');
 var utils = require('./utils');
 
-function compute_svg_width(rect_width, rect_padding, row_length) {
-  return (rect_width + rect_padding) * row_length;
-}
-
 var core = function() {
   var config = { row_height: 15 };
   var container_width = 100;
   var element_padding = 1;
   var element_width = 1;
   var labels = [];
-  var rows = undefined;
   var svg_height = 95;
 
   // styles, appends, does all the right stuff to the container
@@ -24,17 +19,11 @@ var core = function() {
     .style('overflow-y', 'hidden');
 
     return container.append('svg')
-    .attr('width', compute_svg_width(element_width, element_padding, rows[0].length))
+    .attr('width', utils.compute_svg_width(element_width, element_padding, rows[0].length))
     .attr('height', config.row_height * rows.length);
   }
 
   var me = function(container) {
-
-    // validation
-    if (rows === undefined) {
-      throw "'rows' is unset."
-    }
-
     container = container.append('table').append('tr')
     var label_container = container.append('td')
     var oncoprint_container = container.append('td').append('div')
@@ -63,7 +52,7 @@ var core = function() {
 
     // setup the rows by binding data and vertically positioning.
     var row_groups = svg.selectAll('g').data(rows)
-      .enter().append('g')
+      .enter().append('g').attr('class', 'row')
         .attr('transform', function(d,i) {
           return utils.translate(0, i * config.row_height);
         });
@@ -111,6 +100,10 @@ var core = function() {
     if (!arguments.length) return element_width;
     element_width = value;
     return me;
+  };
+
+  me.extract_data = function(container) {
+    return container.selectAll('.row').data();
   };
 
   me.labels = function(value) {
