@@ -102,10 +102,6 @@ var core = function() {
     return me;
   };
 
-  me.extract_data = function(container) {
-    return container.selectAll('.row').data();
-  };
-
   me.labels = function(value) {
     if (!arguments.length) return labels;
     labels = value;
