@@ -23,19 +23,14 @@ var config = { rect_height: 20,
               }
              };
 
-var genomic = function(config) {
-  var container = undefined;
+// TODO at some point, might want to think about
+// defining more closely the order of binding arguments, etc.
+// It would also be nice to have the "stamp pattern" by not having to pass in the div explicitly.
+var genomic = function(config, container) {
   var row_height = 25;
   var width = 750;
 
-  var fbar = function(div) {
-    container = div;
-  };
-
-  fbar.addRow = function(row) {
-    var rows = utils.extract_data(d3.select(container));
-    rows.push(row);
-
+  var me = function() {
     oncoprint_core.config({row_height: row_height});
     oncoprint_core.container_width(width);
     oncoprint_core.element_width(config.rect_width);
@@ -43,32 +38,24 @@ var genomic = function(config) {
     oncoprint_core.labels(utils.rows_to_labels(rows));
     oncoprint_core.rows(rows);
     container.call(oncoprint_core);
+  };
 
-    return fbar;
+  me.addRow = function(row) {
+//     var rows = utils.extract_data(d3.select(container));
+    rows = [];
+    rows.push(row);
+    return me();
   };
 
   // TODO s/rows/addRow
-  fbar.rows = function(rows) {
-    var data = utils.extract_data(d3.select(container));
+  me.rows = function(rows) {
+//     var data = utils.extract_data(d3.select(container));
+    var data = [];
     data = data.concat(rows);
-
-    oncoprint_core.config({row_height: row_height});
-    oncoprint_core.container_width(width);
-    oncoprint_core.element_width(config.rect_width);
-    oncoprint_core.element_padding(config.rect_padding);
-    oncoprint_core.labels(utils.rows_to_labels(rows));
-    oncoprint_core.rows(rows);
-    container.call(oncoprint_core);
-
-    return fbar;
+    return me();
   };
 
-  if (arguments.length === 1) {
-    return fbar;
-  }
-  else {
-    return fbar(arguments[1]);
-  }
+  return me;
 };
 
 // var genomic = function() {

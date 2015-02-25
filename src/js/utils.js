@@ -13,7 +13,8 @@ var deep_clone = function(object) {
 
 // d3 selection -> [ list of rows ]
 var extract_data = function(container_selection) {
-  return container_selection.selectAll('.row').data();
+  var ret = container_selection.selectAll('.row').data()
+  return ret || [];
 };
 
 var is_sample_genetically_altered = function(datum) {
